@@ -1,0 +1,35 @@
+local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+-- Function to trigger the first event
+local function triggerFirstEvent()
+    local args = {
+        [1] = true,
+        [2] = 100
+    }
+    ReplicatedStorage.Events.Shoot:FireServer(unpack(args))
+end
+
+-- Function to trigger the second event
+local function triggerSecondEvent()
+    local args = {
+        [1] = false,
+        [2] = -0.9732707571983337,
+        [3] = true
+    }
+    ReplicatedStorage.Events.Shoot:FireServer(unpack(args))
+end
+
+-- Detect Q key press and trigger events in sequence
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Q then
+        -- Trigger the first event
+        triggerFirstEvent()
+        
+        -- Wait for 0.08 seconds before triggering the second event
+        wait(0.08)
+        
+        -- Trigger the second event
+        triggerSecondEvent()
+    end
+end)
