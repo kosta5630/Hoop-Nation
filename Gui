@@ -43,7 +43,7 @@ local Button = MainTab:CreateButton({
     Name = "Auto Time = Q",
     Callback = function()
         -- The function that takes place when the button is pressed
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/PunchMadeScript/Hoop-Nation-2/refs/heads/main/Auto%20time-Q"))();
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kosta5630/Hoop-Nation/refs/heads/main/Auto%20time%20q"))();
     end,
 })
 
