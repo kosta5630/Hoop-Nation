@@ -1,5 +1,21 @@
 local UserInputService = game:GetService("UserInputService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+
+-- Get the local player
+local player = Players.LocalPlayer
+
+-- Wait for PlayerGui to load
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Wait for "Mobile" inside PlayerGui
+local mobile = playerGui:WaitForChild("Mobile")
+
+-- Wait for "Offense" inside Mobile
+local offense = mobile:WaitForChild("Offense")
+
+-- Wait for the "Shoot" button inside Offense
+local shootButton = offense:WaitForChild("Shoot")
 
 -- Function to trigger the first event
 local function triggerFirstEvent()
@@ -20,16 +36,47 @@ local function triggerSecondEvent()
     ReplicatedStorage.Events.Shoot:FireServer(unpack(args))
 end
 
--- Detect Q key press and trigger events in sequence
+-- **Disable any existing scripts attached to the button**
+for _, v in pairs(shootButton:GetDescendants()) do
+    if v:IsA("Script") or v:IsA("LocalScript") then
+        v.Disabled = true
+    end
+end
+
+-- **Remove all existing event connections from the button**
+local function disconnectAllEvents(object)
+    -- If the button already has event connections, clear them
+    for _, connection in pairs(getconnections(object.MouseButton1Click)) do
+        connection:Disconnect()
+    end
+    for _, connection in pairs(getconnections(object.Activated)) do
+        connection:Disconnect()
+    end
+end
+
+pcall(disconnectAllEvents, shootButton) -- Prevents errors if no events exist
+
+-- **Override the button's function to trigger events on click and hold**
+local isHolding = false
+
+shootButton.MouseButton1Down:Connect(function()
+    -- Trigger events when button is clicked or held down
+    isHolding = true
+    triggerFirstEvent()
+end)
+
+shootButton.MouseButton1Up:Connect(function()
+    -- Trigger second event when the button is released after a hold
+    if isHolding then
+        triggerSecondEvent()
+        isHolding = false
+    end
+end)
+
+-- **Also allow "Q" key to trigger the function**
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.Q then
-        -- Trigger the first event
         triggerFirstEvent()
-        
-        -- Wait for 0.08 seconds before triggering the second event
-        wait(0.08)
-        
-        -- Trigger the second event
         triggerSecondEvent()
     end
 end)
