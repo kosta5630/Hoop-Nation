@@ -40,7 +40,7 @@ local MainTab = Window:CreateTab("Main", nil) -- Title, Image
 local MainSection = MainTab:CreateSection("Useful") -- Changed 'Tab' to 'MainTab'
 
 local Button = MainTab:CreateButton({
-    Name = "Auto Time = Q",
+    Name = "Auto Time = Q or shoot button",
     Callback = function()
         -- The function that takes place when the button is pressed
         loadstring(game:HttpGet("https://raw.githubusercontent.com/kosta5630/Hoop-Nation/refs/heads/main/Auto%20time%20q"))();
