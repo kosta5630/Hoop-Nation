@@ -30,7 +30,7 @@ end
 local function triggerSecondEvent()
     local args = {
         [1] = false,
-        [2] = -1,
+        [2] = -0.9778013515472412,
         [3] = true
     }
     ReplicatedStorage.Events.Shoot:FireServer(unpack(args))
