@@ -84,13 +84,12 @@ local function getClosestPlayerWithBall()
     return closestPlayer
 end
 
--- Get actual movement direction (works for R15 & custom rigs)
-local function getMovementDirection(hrp)
-    if hrp and hrp.Velocity.Magnitude > 0.1 then
-        return hrp.Velocity.Unit -- Get actual movement direction
-    else
-        return hrp.CFrame.LookVector.Unit -- Default to facing direction if not moving
+-- Get direction the player is facing
+local function getFacingDirection(hrp)
+    if hrp then
+        return hrp.CFrame.LookVector -- Get facing direction based on CFrame
     end
+    return Vector3.zero
 end
 
 -- Auto guard function
@@ -99,15 +98,15 @@ local function autoGuard()
 
     local targetHRP = getClosestPlayerWithBall()
     if targetHRP then
-        local movementDirection = getMovementDirection(targetHRP) -- Get movement direction
-        local correctGuardPosition = targetHRP.Position - (movementDirection * 5) -- Stay 5 studs in front
+        -- Get the direction the target player is facing
+        local facingDirection = getFacingDirection(targetHRP)
+        
+        -- Calculate position directly in front of the ball handler (stay in front)
+        local correctGuardPosition = targetHRP.Position + (facingDirection * 5) -- Stay 5 studs in front
 
-        -- Prediction: Adjust guard position slightly ahead of movement direction
-        local predictedPosition = correctGuardPosition + (targetHRP.Velocity * 0.1)
-
-        -- If we're out of position, move back in front of the ball handler
-        if (HRP.Position - predictedPosition).Magnitude > 1 then
-            Humanoid:MoveTo(predictedPosition)
+        -- If we're out of position, move to stay in front
+        if (HRP.Position - correctGuardPosition).Magnitude > 1 then
+            Humanoid:MoveTo(correctGuardPosition)
         end
     else
         Humanoid:MoveTo(HRP.Position) -- Stay still if no one has the ball
