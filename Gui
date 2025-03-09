@@ -47,3 +47,11 @@ local Button = MainTab:CreateButton({
     end,
 })
 
+local Button = MainTab:CreateButton({
+    Name = "Auto Guard ( matchmaking only)",
+    Callback = function()
+        -- The function that takes place when the button is pressed
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/kosta5630/Hoop-Nation/refs/heads/main/Auto%20Guard%20in%20testing"))();
+    end,
+})
+
