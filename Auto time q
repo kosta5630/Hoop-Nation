@@ -45,7 +45,6 @@ end
 
 -- **Remove all existing event connections from the button**
 local function disconnectAllEvents(object)
-    -- If the button already has event connections, clear them
     for _, connection in pairs(getconnections(object.MouseButton1Click)) do
         connection:Disconnect()
     end
@@ -60,23 +59,25 @@ pcall(disconnectAllEvents, shootButton) -- Prevents errors if no events exist
 local isHolding = false
 
 shootButton.MouseButton1Down:Connect(function()
-    -- Trigger events when button is clicked or held down
     isHolding = true
     triggerFirstEvent()
 end)
 
 shootButton.MouseButton1Up:Connect(function()
-    -- Trigger second event when the button is released after a hold
     if isHolding then
         triggerSecondEvent()
         isHolding = false
     end
 end)
 
--- **Also allow "Q" key to trigger the function**
+-- **Allow "Q" key, Xbox X button, and PS4 Square button to trigger the function**
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if not gameProcessed and input.KeyCode == Enum.KeyCode.Q then
-        triggerFirstEvent()
-        triggerSecondEvent()
+    if not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.Q or 
+           input.KeyCode == Enum.KeyCode.ButtonX or 
+           input.KeyCode == Enum.KeyCode.ButtonSquare then
+            triggerFirstEvent()
+            triggerSecondEvent()
+        end
     end
 end)
