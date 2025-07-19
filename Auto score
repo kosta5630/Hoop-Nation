@@ -1,0 +1,46 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+
+-- Define all 4 positions
+local positions = {
+    Vector3.new(-160.23435974121094, 463.9163818359375, -6.539417743682861),
+    Vector3.new(25.44680404663086, 463.9163818359375, -22.9622859954834),
+    Vector3.new(41.03097915649414, 463.9164123535156, 94.87076568603516),
+    Vector3.new(-176.3363037109375, 463.9163818359375, 175.31790161132812)
+}
+
+-- Function to get closest position
+local function getClosestPosition()
+    local closest = nil
+    local shortestDist = math.huge
+    for _, pos in pairs(positions) do
+        local dist = (HumanoidRootPart.Position - pos).Magnitude
+        if dist < shortestDist then
+            shortestDist = dist
+            closest = pos
+        end
+    end
+    return closest
+end
+
+-- On key press (T)
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.T then
+        local targetPos = getClosestPosition()
+        if targetPos then
+            HumanoidRootPart.CFrame = CFrame.new(targetPos)
+
+            -- First Shoot Event
+            ReplicatedStorage:WaitForChild("Events"):WaitForChild("Shoot"):FireServer(true, 100)
+
+            -- Second Shoot Event
+            ReplicatedStorage:WaitForChild("Events"):WaitForChild("Shoot"):FireServer(false, -0.9778013515472412, true)
+        end
+    end
+end)
